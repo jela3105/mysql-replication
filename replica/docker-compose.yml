@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  mysql-slave:
+    image: mysql:8
+    container_name: mysql-slave
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MYSQL_SLAVE_PORT}:3306"
+    command: >
+      --server-id=${MYSQL_SLAVE_SERVER_ID}
+      --relay-log=mysql-relay-bin
+      --log-bin=mysql-bin
+      --read-only=1
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql_slave_data:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d  # Solo si quieres inicializar también en el Slave
+volumes:
+  mysql_slave_data:

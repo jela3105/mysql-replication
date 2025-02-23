@@ -46,8 +46,6 @@ Este repositorio contiene la configuración para montar un entorno de replicaci�
 ### **Requisitos Previos**
 
 - Tener instalado **Docker** y **Docker Compose**.
-- Configurar IPs estáticas en los equipos donde correrán los contenedores.
-- Abrir el puerto **3306** en el Master para permitir la conexión del Slave.
 
 ## **1. Configurar IP Estática en Pop!_OS (Linux)**
 
