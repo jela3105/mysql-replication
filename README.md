@@ -32,10 +32,10 @@ Este repositorio contiene la configuración para montar un entorno de replicaci�
 ### **Estructura del Proyecto**
 ```
 /proyecto
-  |├── master/
+  |├── source/
   |   |├── docker-compose.yml
   |   |└── .env
-  |├── slave/
+  |├── replica/
   |   |├── docker-compose.yml
   |   |└── .env
   |├── initdb/
@@ -49,7 +49,7 @@ Este repositorio contiene la configuración para montar un entorno de replicaci�
 - Configurar IPs estáticas en los equipos donde correrán los contenedores.
 - Abrir el puerto **3306** en el Master para permitir la conexión del Slave.
 
-### **Configurar IP Estática en Pop!_OS (Linux)**
+## **1. Configurar IP Estática en Pop!_OS (Linux)**
 
 1. Abre la configuración de red desde la interfaz gráfica o usa la terminal.
 2. Ejecuta el siguiente comando para listar las interfaces de red:
@@ -101,7 +101,7 @@ Este repositorio contiene la configuración para montar un entorno de replicaci�
 
 Ambos servicios (Master y Slave) utilizan un archivo `.env` para definir las credenciales de MySQL y los parámetros de replicación.
 
-### **Archivo `.env` en Master (`master/.env`)**
+### **Archivo `.env` en Master (`source/.env`)**
 ```ini
 MYSQL_ROOT_PASSWORD=
 MYSQL_REPLICATION_USER=r
@@ -111,7 +111,7 @@ MYSQL_MASTER_PORT=
 MYSQL_MASTER_SERVER_ID=
 ```
 
-### **Archivo `.env` en Slave (`slave/.env`)**
+### **Archivo `.env` en Slave (`replica/.env`)**
 ```ini
 MYSQL_ROOT_PASSWORD=
 MYSQL_REPLICATION_USER=
@@ -125,7 +125,7 @@ MYSQL_SLAVE_SERVER_ID=
 
 ### **Levantar el Master**
 ```bash
-cd master/
+cd source/
 docker-compose up -d
 ```
 Verificar que el contenedor está corriendo:
@@ -135,7 +135,7 @@ docker ps
 
 ### **Levantar el Slave**
 ```bash
-cd ../slave/
+cd ../replica/
 docker-compose up -d
 ```
 
@@ -185,17 +185,17 @@ Si los datos aparecen, la replicación está funcionando correctamente. 🚀
 
 Para detener los contenedores sin eliminar los volúmenes:
 ```bash
-cd master/
+cd source/
 docker-compose down
-cd ../slave/
+cd ../replica/
 docker-compose down
 ```
 
 Para eliminar también los volúmenes (y borrar la base de datos):
 ```bash
-cd master/
+cd source/
 docker-compose down -v
-cd ../slave/
+cd ../replica/
 docker-compose down -v
 ```
 
@@ -208,10 +208,10 @@ Con esta configuración, MySQL Master-Slave quedará funcionando con Docker Comp
 ### **Project Structure**
 ```
 /project
-  |├── master/
+  |├── source/
   |   |├── docker-compose.yml
   |   |└── .env
-  |├── slave/
+  |├── replica/
   |   |├── docker-compose.yml
   |   |└── .env
   |├── initdb/
@@ -270,10 +270,10 @@ Con esta configuración, MySQL Master-Slave quedará funcionando con Docker Comp
    sudo ufw status
    ```
 
-## **Environment Variables**
+## **2. Environment Variables**
 Both services (Master and Slave) use the same file `.env` to define the credentials of MySQL and the replication parameters.
 
-### **File`.env` in Master (`master/.env`)**
+### **File`.env` in Master (`source/.env`)**
 ```ini
 MYSQL_ROOT_PASSWORD=
 MYSQL_REPLICATION_USER=r
@@ -283,7 +283,7 @@ MYSQL_MASTER_PORT=
 MYSQL_MASTER_SERVER_ID=
 ```
 
-### **File `.env` in Slave (`slave/.env`)**
+### **File `.env` in Slave (`replica/.env`)**
 ```ini
 MYSQL_ROOT_PASSWORD=
 MYSQL_REPLICATION_USER=
@@ -293,10 +293,10 @@ MYSQL_SLAVE_PORT=
 MYSQL_SLAVE_SERVER_ID=
 ```
 
-## **Setup and Start Containers**
+## **3. Setup and Start Containers**
 ### **Setup Master**
 ```bash
-cd master/
+cd source/
 docker-compose up -d
 ```
 Verify that the container is running:
@@ -306,11 +306,11 @@ docker ps
 
 ### **Set up the Slave**
 ```bash
-cd ../slave/
+cd ../replica/
 docker-compose up -d
 ```
 
-### **Configure Replication on Slave**
+## **4. Configure Replication on Slave**
 Connect the Slave:
 ```bash
 docker exec -it mysql-slave mysql -uroot -p
@@ -331,7 +331,7 @@ SHOW SLAVE STATUS \G;
 If `SHOW SLAVE STATUS \G;` shows `Slave_IO_Running: Yes`, the replication is working correctly.
 
 
-### **Verify Replication**
+## **5. Verify Replication**
 From the master, insert test data:
 ```bash
 docker exec -it mysql-master mysql -uroot -p
@@ -352,5 +352,19 @@ SELECT * FROM test;
 If the data is there, the replication is working correctly. 🚀
 ...
 
-### **Stop and Remove Containers**
-...
+## **6. Stop and Remove Containers**
+To stop the containers without removint the volumes:
+```bash
+cd source/
+docker-compose down
+cd ../replica/
+docker-compose down
+```
+
+To remove the volumes (and delete the database):
+```bash
+cd source/
+docker-compose down -v
+cd ../replica/
+docker-compose down -v
+```
