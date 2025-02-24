@@ -3,20 +3,21 @@
 version: '3.8'
 services:
   mysql-master:
-    image: mysql:8
+    image: mysql
     container_name: mysql-master
     restart: always
     env_file:
-      - .env
+      - ./.env
+    environment: 
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     ports:
-      - "${MYSQL_MASTER_PORT}:3306"
+      - $MYSQL_MASTER_PORT:3306
     command: >
-      --server-id=${MYSQL_MASTER_SERVER_ID}
+      --server-id=$MYSQL_MASTER_SERVER_ID
       --log-bin=mysql-bin
       --binlog-do-db=cinestelar
-      --default-authentication-plugin=mysql_native_password
     volumes:
-      - mysql_master_data:/var/lib/mysql
-      - ./initdb:/docker-entrypoint-initdb.d  # Script de inicialización bd
+      - ./mysql_master_data:/var/lib/mysql
+      - ../initdb/init.sql:/docker-entrypoint-initdb.d/init.sql # Script de inicialización bd
 volumes:
   mysql_master_data:
