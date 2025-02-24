@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS cinestelar;
+
 CREATE DATABASE cinestelar;
 
 USE cinestelar;
