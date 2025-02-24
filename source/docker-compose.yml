@@ -1,5 +1,3 @@
-#compose para mater
-
 version: '3.8'
 services:
   mysql-master:
@@ -18,6 +16,6 @@ services:
       --binlog-do-db=cinestelar
     volumes:
       - ./mysql_master_data:/var/lib/mysql
-      - ../initdb/init.sql:/docker-entrypoint-initdb.d/init.sql # Script de inicialización bd
+      - ../initdb:/docker-entrypoint-initdb.d # Script de inicialización bd
 volumes:
   mysql_master_data:
